@@ -1,0 +1,30 @@
+
+.appear {
+	-webkit-backface-visibility: visible !important;
+	-ms-backface-visibility: visible !important;
+	backface-visibility: visible !important;
+	-webkit-animation-name: appear;
+	animation-name: appear;
+}
+
+@-webkit-keyframes appear {
+	0% {
+		/*width: 1%;*/
+		opacity: 0;
+		-webkit-transform: perspective(400px) rotateX(90deg);
+		transform: perspective(400px) rotateX(90deg);
+	}
+	40% {
+		-webkit-transform: perspective(400px) rotateX(-10deg);
+		transform: perspective(400px) rotateX(-10deg);
+	}
+	70% {
+		-webkit-transform: perspective(400px) rotateX(10deg);
+		transform: perspective(400px) rotateX(10deg);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: perspective(400px) rotateX(0deg);
+		transform: perspective(400px) rotateX(0deg);
+	}
+}
