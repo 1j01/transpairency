@@ -23,7 +23,17 @@
 			}
 			td {
 				width: 400px;
-				text-align: center; /* not text, but okay */
+				text-align: center;
+				color: gray;
+			}
+			td p {
+				font-size: 2em;
+				opacity: 0.5;
+				user-select: none;
+				-ms-user-select: none;
+				-moz-user-select: none;
+				-webkit-user-select: none;
+				cursor: default;
 			}
 			#black {
 				background: black;
@@ -87,14 +97,16 @@
 		
 		<h1>Trans<span>pair</span>ency</h1>
 		
-		<p>If you have two screenshots, one against a black background and one against a white background, you can rather effectively generate a transparent image of a window or other transparent object.</p>
-		<p>Just drag the screenshot files to their respective drop areas on this page. For best results, make sure nothing changes between screenshots. If you have the window in focus when taking one screenshot, make sure it's in focus when taking the other.</p>
+		<p>If you take a pair of images, one against a black background and one against a white background, you can rather effectively generate a transparent image of a transparent object, such as a window on your desktop.</p>
+		<p>To create a transparent screenshot of a window on your desktop, first change your desktop background to white and take a screenshot. Save the screenshot. Then change your background to white and take another screenshot. Save it.</p>
+		<p>For best results, try to make sure nothing but the background changes between images. If you have a window in focus when taking one screenshot, have it in focus when taking the second screenshot.</p>
+		<p>Then drag the screenshot files to their respective drop areas on this page.</p>
 		
 		<!-- FYI, I don't *normally* use tables for layout. -->
 		<table><tr>
-			<td id="black"></td>
+			<td id="black"><p>black background</p></td>
 			<td id="result" class="uncomputed"></td>
-			<td id="white"></td>
+			<td id="white"><p>white background</p></td>
 		</tr></table>
 		
 		<button id="example">Try example images</button>
