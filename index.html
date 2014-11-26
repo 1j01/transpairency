@@ -24,10 +24,13 @@
 				width: 400px;
 				text-align: center;
 				color: gray;
+				color: rgba(123, 123, 123, 0.6);
 			}
 			td p {
 				font-size: 2em;
-				opacity: 0.5;
+				margin: 0.7em 0;
+			}
+			td, td * {
 				user-select: none;
 				-ms-user-select: none;
 				-moz-user-select: none;
@@ -61,6 +64,25 @@
 			* {
 				transition: all .5s ease-in-out;
 			}
+			button {
+				background: transparent;
+				background: transparent;
+				border: 1px solid gray;
+				color: gray;
+				border: 1px solid rgba(123, 123, 123, 0.8);
+				color: rgba(123, 123, 123, 0.8);
+				padding: 3px 5px;
+				border-radius: 2px;
+			}
+			button:hover,
+			button:focus {
+				border: 1px solid gray;
+				color: gray;
+			}
+			button:active {
+				border: 1px solid a;
+				color: gray;
+			}
 		</style>
 		<script src="lib/Blob.js"></script>
 		<script src="lib/canvas.toBlob.js"></script>
@@ -77,12 +99,14 @@
 		
 		<!-- FYI, I don't *normally* use tables for layout. -->
 		<table><tr>
-			<td id="black"><p>black background</p></td>
+			<td id="black"><p>black background</p><button>Choose File</button> or drag and drop</td>
 			<td id="result" class="empty"></td>
-			<td id="white"><p>white background</p></td>
+			<td id="white"><p>white background</p><button>Choose File</button> or drag and drop</td>
 		</tr></table>
 		
-		<button id="example">Try example images</button>
+		<center style="padding: 20px">
+			<button id="example">Try example images</button>
+		</center>
 		
 		<script>
 			
@@ -106,12 +130,12 @@
 			};
 			
 			// weird psuedo-class-like things
-			var DropTarget = function(element, effect, onDrop){
+			var DropTarget = function(element, effect, ondrop){
 				element.ondragover = element.ondragenter = element.ondrop = function(e){
 					if(e.dataTransfer){
 						e.dataTransfer.dropEffect = effect;
-						if(e.type === "drop" && e.dataTransfer.files && onDrop){
-							onDrop(e.dataTransfer.files);
+						if(e.type === "drop" && e.dataTransfer.files && ondrop){
+							ondrop(e.dataTransfer.files);
 						}
 					}
 					e.preventDefault();
@@ -130,7 +154,9 @@
 					element.appendChild(img);
 					img.onload = function(){
 						img.loaded = true;
-						update();
+						if(update){
+							update();
+						}
 					};
 					img.src = src;
 				};
@@ -145,6 +171,18 @@
 						}
 					}
 				});
+				element.querySelector("button").onclick = function(){
+					var input = document.createElement("input");
+					input.type = "file";
+					input.onchange = function(){
+						var fr = new FileReader();
+						fr.onload = function(){
+							element.hereHaveAnImageSource(fr.result);
+						};
+						fr.readAsDataURL(input.files[0]);
+					};
+					input.click();
+				};
 			};
 			
 			DropTarget(document.body, "none");
