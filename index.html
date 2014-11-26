@@ -82,6 +82,7 @@
 		</style>
 		<script src="lib/Blob.js"></script>
 		<script src="lib/canvas.toBlob.js"></script>
+		<script src="lib/coffee-script.js"></script>
 		<script src="transpairency.js"></script>
 	</head>
 	<body>
@@ -112,99 +113,87 @@
 			<button id="example">Try example images</button>
 		</center>
 		
-		<script>
+		<script type="text/coffeescript">
 			
-			var black = document.getElementById("black");
-			var white = document.getElementById("white");
-			var result = document.getElementById("result");
-			var example = document.getElementById("example");
+			black = document.getElementById "black"
+			white = document.getElementById "white"
+			result = document.getElementById "result"
+			example = document.getElementById "example"
 			
-			var update = function(){
-				if(black.img && white.img && black.img.loaded && white.img.loaded){
-					try {
-						var canvas = transpairent(black.img, white.img);
-						canvas.toBlob(function(blob){
-							result.hereHaveAnImageSource(URL.createObjectURL(blob));
-						});
-						result.className = "computed";
-					} catch(e) {
-						alert("ERROR!\n"+e.message);
-					}
-				}
-			};
+			update = ->
+				if black.img?.loaded and white.img?.loaded
+					try
+						canvas = transpairent black.img, white.img
+						canvas.toBlob (blob)->
+							result.hereHaveAnImageSource URL.createObjectURL blob
+						result.className = "computed"
+					catch e
+						alert "ERROR!\n#{e.message}"
 			
-			// weird psuedo-class-like things
-			var DropTarget = function(element, effect, ondrop){
-				element.ondragover = element.ondragenter = element.ondrop = function(e){
-					if(e.dataTransfer){
-						e.dataTransfer.dropEffect = effect;
-						if(e.type === "drop" && e.dataTransfer.files && ondrop){
-							ondrop(e.dataTransfer.files);
-						}
-					}
-					e.preventDefault();
-					e.stopPropagation();
-					return false;
-				};
-			};
-			var ImageHolder = function(o, imageHolder, update){
-				o.hereHaveAnImageSource = function(src){
-					if(o.img && o.img.src.match(/blob:/)){
-						URL.revokeObjectURL(o.img.src);
-					}
-					imageHolder.innerHTML = "";
+			# weird psuedo-class-like things
+			DropTarget = (element, effect, ondrop)->
+				element.ondragover =
+				element.ondragenter =
+				element.ondrop =
+					(e)->
+						if e.dataTransfer
+							e.dataTransfer.dropEffect = effect
+							if e.type is "drop" and e.dataTransfer.files
+								ondrop? e.dataTransfer.files
+						
+						e.preventDefault()
+						e.stopPropagation()
+						no
+			
+			ImageHolder = (o, imageHolder, update)->
+				o.hereHaveAnImageSource = (src)->
+					if o.img?.src.match /blob:/
+						URL.revokeObjectURL o.img.src
 					
-					var img = o.img = document.createElement("img");
-					imageHolder.appendChild(img);
-					img.onload = function(){
-						img.loaded = true;
-						if(update){
-							update();
-						}
-					};
-					img.src = src;
-				};
-			};
-			var ImageTarget = function(element){
-				var imageHolder = element.querySelector("p");
-				var chooseFile = element.querySelector("button");
+					imageHolder.innerHTML = ""
+					
+					img = o.img = document.createElement "img"
+					imageHolder.appendChild img
+					img.onload = ->
+						img.loaded = yes
+						update?()
+					img.src = src
+			
+			ImageTarget = (element)->
+				imageHolder = element.querySelector "p"
+				chooseFile = element.querySelector "button"
 				
-				ImageHolder(element, imageHolder, update);
+				ImageHolder element, imageHolder, update
 				
-				DropTarget(element, "move", function(files){
-					if(files && files.length){
-						var f = files[0];
-						if(f.type.match(/image/)){
-							element.hereHaveAnImageSource(URL.createObjectURL(f));
-						}
-					}
-				});
+				DropTarget element, "move", (files)->
+					if files?.length
+						f = files[0]
+						if f.type.match /image/
+							element.hereHaveAnImageSource URL.createObjectURL f
 				
-				chooseFile.onclick = function(){
-					var input = document.createElement("input");
-					input.type = "file";
-					input.onchange = function(){
-						var fr = new FileReader();
-						fr.onload = function(){
-							element.hereHaveAnImageSource(fr.result);
-						};
-						fr.readAsDataURL(input.files[0]);
-					};
-					input.click();
-				};
-			};
+				chooseFile.onclick = ->
+					input = document.createElement "input"
+					input.type = "file"
+					input.onchange = ->
+						fr = new FileReader
+						fr.onload = ->
+							element.hereHaveAnImageSource fr.result
+						
+						fr.readAsDataURL input.files[0]
+					
+					input.click()
 			
-			DropTarget(document.body, "none");
 			
-			ImageTarget(black);
-			ImageTarget(white);
+			DropTarget document.body, "none"
 			
-			ImageHolder(result, result);
+			ImageTarget black
+			ImageTarget white
 			
-			example.onclick = function(){
-				black.hereHaveAnImageSource("example/atop-black.png");
-				white.hereHaveAnImageSource("example/atop-white.png");
-			};
+			ImageHolder result, result
+			
+			example.onclick = ->
+				black.hereHaveAnImageSource "example/atop-black.png"
+				white.hereHaveAnImageSource "example/atop-white.png"
 			
 		</script>
 	</body>
