@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Trans|pair|ency</title>
+		<title>Transpairency</title>
 		<style>
 			body {
 				font-family: Helvetica, sans-serif;
@@ -17,7 +17,6 @@
 				overflow: hidden;
 			}
 			table img {
-				max-width: 500px;
 				max-width: 100%;
 				max-height: 500px;
 			}
@@ -54,41 +53,15 @@
 				background-image:
 					linear-gradient(45deg, white 25%, transparent 25%, transparent 75%, white 75%, white),
 					linear-gradient(135deg, white 25%, transparent 25%, transparent 75%, white 75%, white);
-				
-				-webkit-animation: translate 2s linear infinite; /* Safari 4+ */
-				-moz-animation:    translate 2s linear infinite; /* Fx 5+ */
-				-o-animation:      translate 2s linear infinite; /* Opera 12+ */
-				animation:         translate 2s linear infinite; /* IE 10+ */
 			}
-			#result.uncomputed {
+			#result.empty {
 				min-width: 10px;
 				width: 10px;
 			}
-			/*
-			@-webkit-keyframes translate {
-				0%   { background-position: 0px 0px, 0px 0px; }
-				100% { background-position: 60px 30px, 60px 30px; }
-			}
-			@-moz-keyframes translate {
-				0%   { background-position: 0px 0px, 0px 0px; }
-				100% { background-position: 60px 30px, 60px 30px; }
-			}
-			@-o-keyframes translate {
-				0%   { background-position: 0px 0px, 0px 0px; }
-				100% { background-position: 60px 30px, 60px 30px; }
-			}
-			@keyframes translate {
-				0%   { background-position: 0px 0px, 0px 0px; }
-				100% { background-position: 60px 30px, 60px 30px; }
-			}*/
 			* {
 				transition: all .5s ease-in-out;
 			}
-			img, canvas {
-				
-			}
 		</style>
-		<link href="lib/animate.css" rel="stylesheet">
 		<script src="lib/Blob.js"></script>
 		<script src="lib/canvas.toBlob.js"></script>
 		<script src="transpairency.js"></script>
@@ -105,7 +78,7 @@
 		<!-- FYI, I don't *normally* use tables for layout. -->
 		<table><tr>
 			<td id="black"><p>black background</p></td>
-			<td id="result" class="uncomputed"></td>
+			<td id="result" class="empty"></td>
 			<td id="white"><p>white background</p></td>
 		</tr></table>
 		
@@ -149,14 +122,12 @@
 			var ImageHolder = function(element, update){
 				element.hereHaveAnImageSource = function(src){
 					if(element.img && element.img.src.match(/blob:/)){
-						//console.log("URL.revokeObjectURL", element.img.src);
 						URL.revokeObjectURL(element.img.src);
 					}
 					element.innerHTML = "";
 					
 					var img = element.img = document.createElement("img");
 					element.appendChild(img);
-					img.className = "appear";
 					img.onload = function(){
 						img.loaded = true;
 						update();
@@ -170,13 +141,7 @@
 					if(files && files.length){
 						var f = files[0];
 						if(f.type.match(/image/)){
-							/*var fr = new FileReader();
-							fr.onload = function(){
-								element.hereHaveAnImageSource(fr.result);
-							};
-							fr.readAsDataURL(f);*/
-							
-							element.hereHaveAnImageSource(URL.createObjectURL(f)); // todo: revokeObjectURL
+							element.hereHaveAnImageSource(URL.createObjectURL(f));
 						}
 					}
 				});
@@ -192,8 +157,6 @@
 			example.onclick = function(){
 				black.hereHaveAnImageSource("example/atop-black.png");
 				white.hereHaveAnImageSource("example/atop-white.png");
-				//black.hereHaveAnImageSource("example/choose-black.png");
-				//white.hereHaveAnImageSource("example/choose-white.png");
 			};
 			
 		</script>
