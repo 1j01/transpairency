@@ -130,23 +130,24 @@
 					catch e
 						alert "ERROR!\n#{e.message}"
 			
-			# weird psuedo-class-like things
-			DropTarget = (element, effect, ondrop)->
-				element.ondragover =
-				element.ondragenter =
-				element.ondrop =
-					(e)->
-						if e.dataTransfer
-							e.dataTransfer.dropEffect = effect
-							if e.type is "drop" and e.dataTransfer.files
-								ondrop? e.dataTransfer.files
-						
-						e.preventDefault()
-						e.stopPropagation()
-						no
+			class DropTarget
+				constructor: (element, effect, ondrop)->
+					element.ondragover =
+					element.ondragenter =
+					element.ondrop =
+						(e)->
+							if e.dataTransfer
+								e.dataTransfer.dropEffect = effect
+								if e.type is "drop" and e.dataTransfer.files
+									ondrop? e.dataTransfer.files
+							
+							e.preventDefault()
+							e.stopPropagation()
+							no
 			
-			ImageHolder = (o, imageHolder, update)->
-				o.hereHaveAnImageSource = (src)->
+			class ImageHolder
+				constructor: (o, imageHolder, update)->
+				hereHaveAnImageSource: (src)->
 					if o.img?.src.match /blob:/
 						URL.revokeObjectURL o.img.src
 					
@@ -159,37 +160,38 @@
 						update?()
 					img.src = src
 			
-			ImageTarget = (element)->
-				imageHolder = element.querySelector "p"
-				chooseFile = element.querySelector "button"
-				
-				ImageHolder element, imageHolder, update
-				
-				DropTarget element, "move", (files)->
-					if files?.length
-						f = files[0]
-						if f.type.match /image/
-							element.hereHaveAnImageSource URL.createObjectURL f
-				
-				chooseFile.onclick = ->
-					input = document.createElement "input"
-					input.type = "file"
-					input.onchange = ->
-						fr = new FileReader
-						fr.onload = ->
-							element.hereHaveAnImageSource fr.result
-						
-						fr.readAsDataURL input.files[0]
+			class ImageTarget extends DropTarget
+				constructor: (element)->
+					imageHolderElement = element.querySelector "p"
+					chooseFileButton = element.querySelector "button"
 					
-					input.click()
+					@imageHolder = new ImageHolder element, imageHolderElement, update
+					
+					DropTarget element, "move", (files)->
+						if files?.length
+							f = files[0]
+							if f.type.match /image/
+								element.hereHaveAnImageSource URL.createObjectURL f
+					
+					chooseFileButton.onclick = ->
+						input = document.createElement "input"
+						input.type = "file"
+						input.onchange = ->
+							fr = new FileReader
+							fr.onload = ->
+								element.hereHaveAnImageSource fr.result
+							
+							fr.readAsDataURL input.files[0]
+						
+						input.click()
 			
 			
-			DropTarget document.body, "none"
+			new DropTarget document.body, "none"
 			
-			ImageTarget black
-			ImageTarget white
+			new ImageTarget black
+			new ImageTarget white
 			
-			ImageHolder result, result
+			new ImageHolder result
 			
 			example.onclick = ->
 				black.hereHaveAnImageSource "example/atop-black.png"
